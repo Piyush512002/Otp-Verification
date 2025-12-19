@@ -25,20 +25,48 @@ function OtpInputFields() {
         }});
         newValue && inputRef.current[index+1]?.focus();
     }
-    
+
     const isSubmitDisabled = inputArr.some((input) => input === "");
 
     const handleSubmitButton=()=>{
         const otp = inputArr.join("");
         console.log("Submitted OTP:", otp);
     }
-    const onKeyChange=(e:any,index:number)=>{
-        const value = (e.target as HTMLInputElement).value;
-        if(!value && e.key==="Backspace"){
-            
-            inputRef.current[index-1]?.focus();
-        }
+    const onKeyChange = (e: any, index: number) => {
+  e.stopPropagation();
+
+  const value = (e.target as HTMLInputElement).value;
+  
+  // STOP default arrow key behavior  
+  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    e.preventDefault();
+  }
+
+  // Backspace -> go to previous box if empty
+  if (!value && e.key === "Backspace") {
+    inputRef.current[index - 1]?.focus();
+    return;
+  }
+
+  // Arrow Left navigation
+  if (e.key === "ArrowLeft") {
+    const prev = inputRef.current[index - 1];
+    if (prev) {
+      prev.focus();
+      prev.setSelectionRange(prev.value.length, prev.value.length);
     }
+  }
+
+  // Arrow Right navigation
+  if (e.key === "ArrowRight") {
+    const next = inputRef.current[index + 1];
+    if (next) {
+      next.focus();
+      next.setSelectionRange(next.value.length, next.value.length);
+    }
+  }
+};
+
 
    
 
